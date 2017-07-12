@@ -1,0 +1,42 @@
+
+
+Problem: Yazar tanıma
+Verisetimizde belli yazarlar tarafından yazılmış metinler var, yani kategorilerimiz yazar isimleri. Program bu verisetine ve uyguladığımız metoda göre, yazarı bilinmeyen yeni bir metnin hangi yazara ait olduğunu bulacak. (Tabii ki bu metin gerçekten bu yazara ait olmayabilir : )
+
+
+Dataset:
+6 yazardan birer roman: nlp101/data/authors
+
+
+Yöntem:
+Öncelikle, dataseti train ve test setlere mutlaka ayıralım. Train set genellikle tüm datasetin %80'i olarak alınır. Problemimiz doküman sınıflandırma olduğu ve datasetimiz sınırlı olduğu için, büyüklüğe göre, her romanı mesela 10 parçaya ayırıp bu parçaları birer doküman olarak ele alabilirsiniz. 60 doküman elde ettinizse, bunun 45 tanesini trainig set, 15 tanesini test sete yerleştirirsiniz. Nasıl ayıracağınız da önemli, yorumlarınızı bekleriz.
+ 
+1) Naive Bayes algoritması (daha önce yazdığımız)
+   Kelimelerin kategorilerdeki olasılıklarının estimate ile sınıflandırma yapıyorduk.
+2) Basit lineer yöntem:
+   -Representation:
+   Metinleri birer vektör olarak temsil edeceğiz; her bir metnin n uzunluğunda kendi vektörü (v) olacak.
+   -Feature extraction:
+   Bu problem için vektör uzunluğu 3 ve her bir ölçüm şöyle olsun:
+    1) f1: metindeki ortalama kelime uzunluğu
+    2) f2: metindeki noktalama işareti sayısının, metindeki toplam kelime sayısına oranı
+    3) f3: metindeki kelimelerin frekanslarının ortalaması
+   İşte bunlar modelimizde, metinlerden çıkardığımız feature'lar (türkçesi öznitelik) oluyor. Yazma stilinin göstergesi olabilecek 3 özellik olarak seçtik, elbette başka bir sürü özellik var, siz kendi düşündüklerinizi ekleyebilirsiniz.
+
+   -Training:
+   Her bir kategori için, bu üç özelliğin ortalamasını bulalım. Sonuçta, her bir kategorinin 3 uzunluğunda kendi vektörü olmuş olacak.
+
+   -Prediction:
+   Yeni bir metin geldiğinde, onun için de bu feature extraction yöntemini uygulayalım; 3 elemanlı bir vektörü olacak. Bu vektörü, kategorilerin vektörleriyle karşılaştıralım ve hangisine yakınsa metin o kategoriye aittir diyerek metnin kategorisini tahmin etmiş olalım.
+   Vektörler arası uzaklığı nasıl bulacağız? Aralarındaki açı küçükse birbirine yakın yani benzerdirler yaklaşımıyla açıyı ölçelim. Cosine ölçümü buna uygun. Cosine similarity ölçümünü kullanabilirsiniz. Kolayca implement edebilirsiniz. 
+
+
+Sonuçlar
+Testing:
+   Belli sayıda metnin (bu dataset için 15 uygun demiştik) kategorisini tahmin edip modelin sonuçlarıyla metinlerin gerçek kategorilerini karşılaştıracağız. Yani precision, recall, f1-score ve accuracy değerlerini bulacağız ve sınıflandırıcının performansı için bir ölçüm yapmış olacağız.
+
+Her iki yöntem için de sonuçları karşılaştıralım, yorumlayalım. Neden biri diğerinden daha iyi olabilir veya benzer performanstalar sorularını soralım, hangisi uygunsa.
+Farklı sayıda metinler, farklı sayıda kategoriler deneyelim, bu modeli olabildiğince farklı açılardan değerlendirelim.
+Haftaya basit lineer yöntemin nasıl geliştirildiğini, herhangi bir güncelleme, ağırlıklandırma olmadığı için aslında bunun tam olarak bir öğrenme işlemi olmadığını konuşuruz. 
+Scikit-learn kullanmaya başlayacağız, incelemeye başlayabilirsiniz: http://scikit-learn.org/stable/index.html
+
